@@ -1,12 +1,16 @@
 %% generate patterns
 p=[12,20,40,60,80,100];
 N=100;
-patterns=genPatterns(N,p);
+
 %loopa över p
 err=int8(zeros(1,length(p)));
 for ii=p
    for jj=1:1e5
-       c=
+       pattern=genPatterns(N,ii);
+       weights = hebbsRule(pattern,false);
+       randIndex=randi([1,100]);
+       S0=pattern()
+       S1
        err(ii) = err(ii)+int8(c>1);
    end
 end
