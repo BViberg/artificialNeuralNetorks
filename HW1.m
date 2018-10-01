@@ -1,9 +1,8 @@
-profile on
 %% generate patterns
-pVector=[12];%,20,40,60,80,100];
+pVector=[12,20,40,60,80,100];
 N=100;
 
-%loopa över p
+%loop over p
 err=double(zeros(1,length(pVector)));
 counter=0;
 nbrTrials=1e5;
@@ -27,6 +26,44 @@ for p = pVector
    disp('-----------------')
 end
 
-err/nbrTrials
+function [patterns] = genPatterns(N,p)
+%GENPATTERNS generates random patterns each coulmn in patterns 
+values = [-1,1];
+index = randi([1,2],N,p);
+patterns = values(index);
+end
 
-profile viewer
+function [weights] = hebbsRule(pattern,diagZero,rowIndex)
+%HEBBSRULE This function returns the weights that store the pattern
+%according to hebbs rule. If diagZero is true then w_ii = 0.
+% Iff rowIndex exists then only that row of weights is generated,
+% NOTE that the matrix is still NxN but only that specific row can be 
+% nonzero
+[N,p]=size(pattern);
+weights=zeros(N);
+if nargin==2
+    for i=1:p
+        weights = weights + pattern(:,i)*pattern(:,i)';
+    end
+    if diagZero
+        weights(logical(eye(N)))= 0;
+    end
+else
+    for i=1:p
+        weights(rowIndex,:)=weights(rowIndex,:)+pattern(rowIndex,i)*pattern(:,i)';
+    end
+    if diagZero
+        weights(rowIndex,rowIndex)=0;
+    end
+end
+weights=weights/N;
+end
+
+function [signX] = signum(x)
+% SIGNUM returns sign of input(>0 => 1,<0 => -1). signum(0) will return 1
+signX=sign(x);
+signX(signX==0)=1;
+end
+
+
+
